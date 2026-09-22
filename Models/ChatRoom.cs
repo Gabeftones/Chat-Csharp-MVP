@@ -1,13 +1,13 @@
 namespace ChatMVC.Models
 {
-    public class ChatViewModel
+    public class ChatRoom
     {
-        public string UserName { get; set; } = string.Empty;
-
         public string RoomName { get; set; } = string.Empty;
 
-        public string MessageText { get; set; } = string.Empty;
+        public List<string> Participants { get; set; } = new();
 
         public List<Message> Messages { get; set; } = new();
+
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }
 }

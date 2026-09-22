@@ -1,0 +1,17 @@
+[
+  {
+    "UserName": "admin",
+    "Password": "123456",
+    "CreatedAt": "2026-09-22T22:28:31.1956147Z"
+  },
+  {
+    "UserName": "aluno",
+    "Password": "123456",
+    "CreatedAt": "2026-09-22T22:28:31.1956973Z"
+  },
+  {
+    "UserName": "professor",
+    "Password": "123456",
+    "CreatedAt": "2026-09-22T22:28:31.1956976Z"
+  }
+]

@@ -1,6 +1,6 @@
-using Microsoft.AspNetCore.Mvc;
 using ChatMVC.Models;
 using ChatMVC.Services;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ChatMVC.Controllers
 {
@@ -13,33 +13,22 @@ namespace ChatMVC.Controllers
             _chatService = chatService;
         }
 
-        public IActionResult Index()
+        public IActionResult Room(string roomName)
         {
-            return View();
-        }
-
-        [HttpPost]
-        public IActionResult Enter(string userName, string
-       roomName)
-        {
-            return RedirectToAction(
-            "Room",
-            new
+            var currentUser = HttpContext.Session.GetString("CurrentUser");
+            if (string.IsNullOrWhiteSpace(currentUser))
             {
-                userName,
-                roomName
-            });
-        }
+                return RedirectToAction("Index", "Home");
+            }
 
-        public IActionResult Room(string userName, string
-       roomName)
-        {
-            ChatViewModel model = new()
+            var normalizedRoom = string.IsNullOrWhiteSpace(roomName) ? "sala-geral" : roomName.Trim();
+            _chatService.CreateRoom(normalizedRoom, new[] { currentUser });
+
+            var model = new ChatViewModel
             {
-                UserName = userName,
-                RoomName = roomName,
-                Messages =
-           _chatService.GetRoomMessages(roomName)
+                UserName = currentUser,
+                RoomName = normalizedRoom,
+                Messages = _chatService.GetRoomHistory(normalizedRoom, currentUser)
             };
 
             return View(model);
@@ -48,22 +37,21 @@ namespace ChatMVC.Controllers
         [HttpPost]
         public IActionResult SendMessage(ChatViewModel model)
         {
-            Message msg = new()
+            var currentUser = HttpContext.Session.GetString("CurrentUser");
+            if (string.IsNullOrWhiteSpace(currentUser))
             {
-                UserName = model.UserName,
-                RoomName = model.RoomName,
-                Text = model.MessageText
-            };
+                return RedirectToAction("Index", "Home");
+            }
 
-            _chatService.SaveMessage(msg);
-
-            return RedirectToAction(
-            "Room",
-            new
+            var userName = string.IsNullOrWhiteSpace(model.UserName) ? currentUser : model.UserName;
+            if (string.IsNullOrWhiteSpace(model.RoomName))
             {
-                userName = model.UserName,
-                roomName = model.RoomName
-            });
+                model.RoomName = "sala-geral";
+            }
+
+            _chatService.SaveMessage(model.RoomName, userName, model.MessageText);
+
+            return RedirectToAction("Room", new { roomName = model.RoomName });
         }
     }
 }

@@ -1,0 +1,26 @@
+[
+  {
+    "RoomName": "sala-geral",
+    "Participants": [
+      "admin",
+      "aluno"
+    ],
+    "Messages": [
+      {
+        "Id": "98dc4c15-095b-4600-8e22-ae1724d650de",
+        "UserName": "admin",
+        "RoomName": "sala-geral",
+        "Text": "Teste",
+        "SentAt": "2026-09-22T22:29:03.2796537Z"
+      },
+      {
+        "Id": "a820cf66-c4c3-4683-af93-de52a02be7d2",
+        "UserName": "aluno",
+        "RoomName": "sala-geral",
+        "Text": "Outro teste",
+        "SentAt": "2026-09-22T22:29:28.6856461Z"
+      }
+    ],
+    "CreatedAt": "2026-09-22T22:28:56.2144532Z"
+  }
+]
