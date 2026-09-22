@@ -36,17 +36,26 @@ public class HomeController : Controller
 
         if (string.IsNullOrWhiteSpace(cleanUserName) || string.IsNullOrWhiteSpace(cleanPassword))
         {
+            Response.StatusCode = StatusCodes.Status400BadRequest;
             ViewBag.Error = "Informe usuário e senha.";
             return View("Index");
         }
 
         if (!_chatService.Authenticate(cleanUserName, cleanPassword))
         {
-            ViewBag.Error = "Usuário ou senha inválidos.";
+            Response.StatusCode = StatusCodes.Status401Unauthorized;
+            ViewBag.Error = "Usuário ou senha inválidos ou usuário inativo.";
             return View("Index");
         }
 
         HttpContext.Session.SetString("CurrentUser", cleanUserName);
+        Response.Cookies.Append("ChatUser", cleanUserName, new CookieOptions
+        {
+            HttpOnly = true,
+            SameSite = SameSiteMode.Lax,
+            Expires = DateTimeOffset.UtcNow.AddHours(1)
+        });
+
         _chatService.CreateRoom(cleanRoomName, new[] { cleanUserName });
 
         return RedirectToAction("Room", "Chat", new { roomName = cleanRoomName });

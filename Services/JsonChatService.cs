@@ -30,10 +30,11 @@ namespace ChatMVC.Services
             var users = LoadUsers();
             return users.Any(u =>
                 string.Equals(u.UserName, userName, StringComparison.OrdinalIgnoreCase) &&
-                string.Equals(u.Password, password, StringComparison.Ordinal));
+                string.Equals(u.Password, password, StringComparison.Ordinal) &&
+                string.Equals(u.Situacao, "Ativo", StringComparison.OrdinalIgnoreCase));
         }
 
-        public void RegisterUser(string userName, string password)
+        public void RegisterUser(string userName, string password, string nome = "", bool ativo = true)
         {
             if (string.IsNullOrWhiteSpace(userName) || string.IsNullOrWhiteSpace(password))
             {
@@ -46,7 +47,13 @@ namespace ChatMVC.Services
                 return;
             }
 
-            users.Add(new ChatUser { UserName = userName.Trim(), Password = password.Trim() });
+            users.Add(new ChatUser
+            {
+                UserName = userName.Trim(),
+                Nome = string.IsNullOrWhiteSpace(nome) ? userName.Trim() : nome.Trim(),
+                Password = password.Trim(),
+                Situacao = ativo ? "Ativo" : "Inativo"
+            });
             SaveUsers(users);
         }
 
@@ -202,9 +209,9 @@ namespace ChatMVC.Services
             {
                 var seedUsers = new List<ChatUser>
                 {
-                    new() { UserName = "admin", Password = "123456" },
-                    new() { UserName = "aluno", Password = "123456" },
-                    new() { UserName = "professor", Password = "123456" }
+                    new() { UserName = "admin", Nome = "Administrador", Password = "123456", Situacao = "Ativo" },
+                    new() { UserName = "aluno", Nome = "Aluno", Password = "123456", Situacao = "Ativo" },
+                    new() { UserName = "professor", Nome = "Professor", Password = "123456", Situacao = "Ativo" }
                 };
 
                 SaveUsers(seedUsers);
